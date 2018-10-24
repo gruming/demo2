@@ -65,6 +65,7 @@ jobs:
         command: eb deploy Demo2-env
 #        command: eb deploy $CIRCLE_BRANCH-my-application
 
+# 수정
 workflows:
   version: 2
   workflow:
