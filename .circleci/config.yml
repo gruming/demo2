@@ -40,3 +40,28 @@ jobs:
     # run tests!
     - run: mvn integration-test
 
+  deploy:
+    docker:
+    - image: circleci/python:2.7-jessie
+    working_directory: ~/circleci-docs
+    steps:
+#    - run:
+#        name: Install awscli
+#        command: sudo pip install awscli
+    - run:
+        name: Installing deployment dependencies
+        working_directory: /
+        command: |
+          sudo apt-get -y -qq update
+          sudo apt-get install python-pip python-dev build-essential
+          sudo pip install awsebcli --upgrade
+
+#    - run:
+#        name: Deploy to S3
+#        command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+
+    - run:
+        name: Deploy to Elastic Beanstalk
+        command: eb deploy Demo2-env
+#        command: eb deploy $CIRCLE_BRANCH-my-application
+
