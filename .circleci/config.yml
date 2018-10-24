@@ -1,24 +1,84 @@
-# Java Maven CircleCI 2.0 configuration file
+## Java Maven CircleCI 2.0 configuration file
+##
+## Check https://circleci.com/docs/2.0/language-java/ for more details
+##
+#version: 2
+#jobs:
+#  build:
+#    docker:
+#    # specify the version you desire here
+#    - image: circleci/openjdk:8u181
 #
-# Check https://circleci.com/docs/2.0/language-java/ for more details
+#    # Specify service dependencies here if necessary
+#    # CircleCI maintains a library of pre-built images
+#    # documented at https://circleci.com/docs/2.0/circleci-images/
+#    # - image: circleci/postgres:9.4
 #
+#    working_directory: ~/repo
+#
+#    environment:
+#      # Customize the JVM maximum heap limit
+#      MAVEN_OPTS: -Xmx3200m
+#
+#    steps:
+#    - checkout
+#
+#    # Download and cache dependencies
+#    - restore_cache:
+#        keys:
+#        - v1-dependencies-{{ checksum "pom.xml" }}
+#        # fallback to using the latest cache if no exact match is found
+#        - v1-dependencies-
+#
+#    - run: mvn dependency:go-offline
+#
+#    - save_cache:
+#        paths:
+#        - ~/.m2
+#        key: v1-dependencies-{{ checksum "pom.xml" }}
+#
+#    # run tests!
+#    - run: mvn integration-test
+#
+#  deploy:
+#    docker:
+#    - image: circleci/python:2.7-jessie
+#    working_directory: ~/circleci-docs
+#    steps:
+##    - run:
+##        name: Install awscli
+##        command: sudo pip install awscli
+#    - run:
+#        name: Installing deployment dependencies
+#        working_directory: /
+#        command: |
+#          sudo apt-get -y -qq update
+#          sudo apt-get install python-pip python-dev build-essential
+#          sudo pip install awsebcli --upgrade
+#
+##    - run:
+##        name: Deploy to S3
+##        command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+#
+#    - run:
+#        name: Deploy to Elastic Beanstalk
+#        command: eb deploy Demo2-env
+##        command: eb deploy $CIRCLE_BRANCH-my-application
+#
+## 수정
+##workflows:
+##  version: 2
+##  workflow:
+##    jobs:
+##    - build
+##    - deploy
+
+
 version: 2
 jobs:
   build:
     docker:
-    # specify the version you desire here
-    - image: circleci/openjdk:8u181
-
-    # Specify service dependencies here if necessary
-    # CircleCI maintains a library of pre-built images
-    # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
-
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+    - image: circleci/openjdk:8-jdk
 
     steps:
     - checkout
@@ -30,45 +90,54 @@ jobs:
         # fallback to using the latest cache if no exact match is found
         - v1-dependencies-
 
-    - run: mvn dependency:go-offline
+#    - run:
+#        name: Install Gradle dependencies
+#        command: gradle dependencies
+    - run:
+        name: Install Maven dependencies
+        command: mvn dependency:go-offline
 
     - save_cache:
         paths:
         - ~/.m2
         key: v1-dependencies-{{ checksum "pom.xml" }}
 
-    # run tests!
-    - run: mvn integration-test
-
-  deploy:
-    docker:
-    - image: circleci/python:2.7-jessie
-    working_directory: ~/circleci-docs
-    steps:
 #    - run:
-#        name: Install awscli
-#        command: sudo pip install awscli
-    - run:
-        name: Installing deployment dependencies
-        working_directory: /
-        command: |
-          sudo apt-get -y -qq update
-          sudo apt-get install python-pip python-dev build-essential
-          sudo pip install awsebcli --upgrade
-
-#    - run:
-#        name: Deploy to S3
-#        command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+#        name: Run Gradle tests
+#        command: gradle test
 
     - run:
-        name: Deploy to Elastic Beanstalk
-        command: eb deploy Demo2-env
-#        command: eb deploy $CIRCLE_BRANCH-my-application
+        name: Run Maven tests
+        command: mvn integration-test
 
-# 수정
-#workflows:
-#  version: 2
-#  workflow:
-#    jobs:
-#    - build
-#    - deploy
+#    - run:
+#        name: Jacoco test report
+#        command: gradle jacocoTestReport
+
+#    - run:
+#        name: Upload code coverage
+#        command: bash <(curl -s https://codecov.io/bash)
+
+    - run:
+        name: Install Python and PIP
+        command: sudo apt-get update && sudo apt-get install -y python-setuptools python python-pip
+
+    - run:
+        name: Install AWS-EB-CLI
+        command: sudo pip install awsebcli
+
+#    - run:
+#        name: Create shadow jar
+#        command: gradle shadowJar
+
+    - deploy:
+        name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
+        command:  |
+          if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
+             eb deploy
+          fi
+#        command:  |
+#         if [ "${CIRCLE_BRANCH}" == "master" ]; then
+#           eb use demo-spark-eb-ci
+#           eb deploy --profile default
+#         fi

@@ -1,10 +1,26 @@
+#branch-defaults:
+#  master:
+#    environment: Demo2-env
+##    environment: $CIRCLE_BRANCH-my-application
+#global:
+#  application_name: demo2
+##  default_ec2_keyname: XXXXXX
+##  default_platform: 64bit Amazon Linux 2017.09 v2.6.2 running Ruby 2.4 (Passenger Standalone)
+#  default_region: ap-northeast-2
+#  sc: git
+
 branch-defaults:
+#  develop:
+#    environment: demo-spark-eb-ci-dev
   master:
     environment: Demo2-env
-#    environment: $CIRCLE_BRANCH-my-application
+#  release:
+#    environment: demo-spark-eb-ci-hml
+deploy:
+#  artifact: ./build/demo-spark-eb-ci-shadow.jar
+  artifact: ./target/demo-0.0.1-SNAPSHOT.war
 global:
-  application_name: demo2
-#  default_ec2_keyname: XXXXXX
-#  default_platform: 64bit Amazon Linux 2017.09 v2.6.2 running Ruby 2.4 (Passenger Standalone)
+  application_name: demo-spark-eb-ci
+  default_platform: Java 8
+#  default_region: us-east-1
   default_region: ap-northeast-2
-  sc: git
