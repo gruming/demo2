@@ -80,7 +80,6 @@ jobs:
     docker:
     - image: circleci/openjdk:8-jdk
     - image: circleci/python:2.7-jessie
-      working_directory: ~/circleci-docs
 
     steps:
     - checkout
