@@ -124,7 +124,7 @@ jobs:
 
     - run:
         name: Install AWS-EB-CLI
-        command: sudo pip install awscli --upgrade
+        command: sudo pip install awsebcli --upgrade
 
 #    - run:
 #        name: Create shadow jar
@@ -134,8 +134,7 @@ jobs:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-           aws elasticbeanstalk use demo2
-           aws elasticbeanstalk deploy
+           eb deploy
          fi
 
 #        command:  |
