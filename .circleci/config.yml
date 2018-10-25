@@ -133,14 +133,15 @@ jobs:
     - deploy:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
-          chmod +x ./.elasticbeanstalk/check_eb_branch.py
-          if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
-             eb deploy
-          fi
+         if [ "${CIRCLE_BRANCH}" == "master" ]; then
+           eb use demo2
+           eb deploy
+         fi
+
 #        command:  |
-#         if [ "${CIRCLE_BRANCH}" == "master" ]; then
-#           eb use demo-spark-eb-ci
-#           eb deploy --profile default
-#         fi
+#          chmod +x ./.elasticbeanstalk/check_eb_branch.py
+#          if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
+#             eb deploy
+#          fi
 
 #          sudo chown -R $USER:$USER ./.elasticbeanstalk/check_eb_branch.py
