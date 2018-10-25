@@ -119,9 +119,9 @@ jobs:
 #        name: Upload code coverage
 #        command: bash <(curl -s https://codecov.io/bash)
 
-    - run:
-        name: Install awscli
-        command: sudo pip install awscli
+#    - run:
+#        name: Install awscli
+#        command: sudo pip install awscli
 
     - run:
         name: Install Python and PIP
@@ -130,8 +130,10 @@ jobs:
           sudo apt-get install python-pip python-dev build-essential
 
     - run:
-        name: Install AWS-EB-CLI
-        command: sudo pip install awsebcli --upgrade
+        name: Install awscli & AWS-EB-CLI
+        command: |
+          sudo pip install awscli
+          sudo pip install awsebcli --upgrade
 
 #    - run:
 #        name: Create shadow jar
