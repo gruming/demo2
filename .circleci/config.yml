@@ -143,8 +143,7 @@ jobs:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-           eb init
-           eb deploy
+           eb deploy Demo2-env
          fi
 
 #        command:  |
