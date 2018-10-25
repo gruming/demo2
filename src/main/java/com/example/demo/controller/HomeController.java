@@ -13,6 +13,6 @@ public class HomeController {
 
   @GetMapping(value = "/private")
   public String privateArea(){
-    return "private1";
+    return "private3";
   }
 }
