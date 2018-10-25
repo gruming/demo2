@@ -143,11 +143,12 @@ jobs:
 #        name: Create shadow jar
 #        command: gradle shadowJar
 
+    - run : echo ${AWS_ACCESS_KEY_ID}
     - deploy:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-           eb deploy --profile eb-cli
+           eb deploy Demo2-env
          fi
 
 #        command:  |
