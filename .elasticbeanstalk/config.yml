@@ -20,7 +20,7 @@ deploy:
 #  artifact: ./build/demo-spark-eb-ci-shadow.jar
   artifact: ./target/demo-0.0.1-SNAPSHOT.war
 global:
-  application_name: demo-spark-eb-ci
+  application_name: Demo2-env
   default_platform: Java 8
 #  default_region: us-east-1
   default_region: ap-northeast-2
