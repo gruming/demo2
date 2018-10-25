@@ -79,6 +79,8 @@ jobs:
   build:
     docker:
     - image: circleci/openjdk:8-jdk
+    - image: circleci/python:2.7-jessie
+      working_directory: ~/circleci-docs
 
     steps:
     - checkout
@@ -119,8 +121,14 @@ jobs:
 #        command: bash <(curl -s https://codecov.io/bash)
 
     - run:
+        name: Install awscli
+        command: sudo pip install awscli
+
+    - run:
         name: Install Python and PIP
-        command: sudo apt-get update && sudo apt-get install -y python-setuptools python python-pip
+        command: |
+          sudo apt-get -y -qq update
+          sudo apt-get install python-pip python-dev build-essential
 
     - run:
         name: Install AWS-EB-CLI
