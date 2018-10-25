@@ -133,7 +133,8 @@ jobs:
     - deploy:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
-          sudo chown -R $USER:$USER ./.elasticbeanstalk/check_eb_branch.py
+#          sudo chown -R $USER:$USER ./.elasticbeanstalk/check_eb_branch.py
+          chmod +x ./.elasticbeanstalk/check_eb_branch.py
           if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
              eb deploy
           fi
