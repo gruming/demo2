@@ -91,9 +91,6 @@ jobs:
         # fallback to using the latest cache if no exact match is found
         - v1-dependencies-
 
-#    - run:
-#        name: Install Gradle dependencies
-#        command: gradle dependencies
     - run:
         name: Install Maven dependencies
         command: mvn dependency:go-offline
@@ -103,25 +100,9 @@ jobs:
         - ~/.m2
         key: v1-dependencies-{{ checksum "pom.xml" }}
 
-#    - run:
-#        name: Run Gradle tests
-#        command: gradle test
-
     - run:
         name: Run Maven tests
         command: mvn integration-test
-
-#    - run:
-#        name: Jacoco test report
-#        command: gradle jacocoTestReport
-
-#    - run:
-#        name: Upload code coverage
-#        command: bash <(curl -s https://codecov.io/bash)
-
-#    - run:
-#        name: Install awscli
-#        command: sudo pip install awscli
 
     - run:
         name: Install Python and PIP
@@ -139,23 +120,19 @@ jobs:
         name: Setup AWS credentials
         command: |
           mkdir ~/.aws && printf "[profile eb-cli]\naws_access_key_id = ${AWS_ACCESS_KEY_ID}\naws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/config
-#    - run:
-#        name: Create shadow jar
-#        command: gradle shadowJar
 
     - run : echo ${AWS_ACCESS_KEY_ID}
     - deploy:
         name: Deploy to AWS ElasticBeanstalk using settings from ./.elasticbeanstalk/config.yml
         command:  |
-         if [ "${CIRCLE_BRANCH}" == "master" ]; then
-           eb deploy
-         fi
+          chmod +x ./.elasticbeanstalk/check_eb_branch.py
+          if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
+             eb deploy
+          fi
 
-
-#        command:  |
-#          chmod +x ./.elasticbeanstalk/check_eb_branch.py
-#          if ./.elasticbeanstalk/check_eb_branch.py $(git rev-parse --abbrev-ref HEAD); then
-#             eb deploy
-#          fi
+        #        command:  |
+#         if [ "${CIRCLE_BRANCH}" == "master" ]; then
+#           eb deploy
+#         fi
 
 #          sudo chown -R $USER:$USER ./.elasticbeanstalk/check_eb_branch.py
